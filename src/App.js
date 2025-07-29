@@ -1,26 +1,47 @@
 import Handlebars from "handlebars";
-import * as Pages from "./pages";
+import loginTemplate from "./pages/loginPage.hbs";
+import registerTemplate from "./pages/registerPage.hbs";
+import notFoundTemplate from "./pages/404.hbs";
+import chatTemplate from "./pages/chatPage.hbs";
+import { conversations, messages } from "./static/mockData";
 
 export default class App {
   constructor() {
-    this.state = {
-      currentPage: "register",
-    };
     this.appElement = document.querySelector("#app");
-    this.render();
+    this.setPageFromPath(window.location.pathname);
   }
 
-  render() {
-    let template;
+  setPageFromPath(path) {
+    if (path === "/login") {
+      this.render("login");
+    } else if (path === "/register") {
+      this.render("register");
+    } else if (path === "/404") {
+      this.render("notFoundPage");
+    } else {
+      this.render("chat");
+    }
+  }
 
-    if (this.state.currentPage === "login") {
-      template = Handlebars.compile(Pages.LoginPage);
+  render(page) {
+    let template;
+    if (page === "login") {
+      template = Handlebars.compile(loginTemplate);
       this.appElement.innerHTML = template();
       this.setLoginForm();
-    } else if (this.state.currentPage === "register") {
-      template = Handlebars.compile(Pages.RegistrationPage);
+    } else if (page === "register") {
+      template = Handlebars.compile(registerTemplate);
       this.appElement.innerHTML = template();
       this.setRegistrationForm();
+    } else if (page === "notFoundPage") {
+      template = Handlebars.compile(notFoundTemplate);
+      this.appElement.innerHTML = template();
+    } else {
+      template = Handlebars.compile(chatTemplate);
+      this.appElement.innerHTML = template({
+        conversations: conversations,
+        messages: messages,
+      });
     }
   }
 
@@ -31,15 +52,11 @@ export default class App {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const formData = new FormData(form);
-      const username = formData.get("username");
-      const password = formData.get("password");
-
-      this.handleLoginFormSubmit(username, password);
+      console.log("Login data:", {
+        username: formData.get("username"),
+        password: formData.get("password"),
+      });
     });
-  }
-
-  handleLoginFormSubmit(username, password) {
-    console.log("Login submitted:", { username, password });
   }
 
   setRegistrationForm() {
@@ -48,22 +65,8 @@ export default class App {
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-
       const formData = new FormData(form);
-      const userData = {
-        first_name: formData.get("first_name"),
-        second_name: formData.get("second_name"),
-        login: formData.get("login"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-        phone: formData.get("phone"),
-      };
-
-      this.handleRegisterFormSubmit(userData);
+      console.log("Registration data:", Object.fromEntries(formData));
     });
-  }
-
-  handleRegisterFormSubmit(userData) {
-    console.log("Registration submitted:", userData);
   }
 }
