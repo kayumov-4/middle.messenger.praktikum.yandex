@@ -2,7 +2,10 @@ import Handlebars from "handlebars";
 import loginTemplate from "./pages/loginPage.hbs";
 import registerTemplate from "./pages/registerPage.hbs";
 import notFoundTemplate from "./pages/404.hbs";
+import errorTemplate from "./pages/500.hbs";
 import chatTemplate from "./pages/chatPage.hbs";
+import navigationTemplate from "./pages/navigationPage.hbs";
+
 import { conversations, messages } from "./static/mockData";
 
 export default class App {
@@ -16,16 +19,24 @@ export default class App {
       this.render("login");
     } else if (path === "/register") {
       this.render("register");
-    } else if (path === "/404") {
-      this.render("notFoundPage");
-    } else {
+    } else if (path === "/500") {
+      this.render("error");
+    } else if (path === "/messenger") {
       this.render("chat");
+    } else if (path === "/navigation") {
+      this.render("navigation");
+    } else {
+      errorTemplate;
+      this.render("notFound");
     }
   }
 
   render(page) {
     let template;
-    if (page === "login") {
+    if (page === "navigation") {
+      template = Handlebars.compile(navigationTemplate);
+      this.appElement.innerHTML = template();
+    } else if (page === "login") {
       template = Handlebars.compile(loginTemplate);
       this.appElement.innerHTML = template();
       this.setLoginForm();
@@ -33,15 +44,21 @@ export default class App {
       template = Handlebars.compile(registerTemplate);
       this.appElement.innerHTML = template();
       this.setRegistrationForm();
-    } else if (page === "notFoundPage") {
+    } else if (page === "notFound") {
       template = Handlebars.compile(notFoundTemplate);
       this.appElement.innerHTML = template();
-    } else {
+    } else if (page === "error") {
+      template = Handlebars.compile(errorTemplate);
+      this.appElement.innerHTML = template();
+    } else if (page === "chat") {
       template = Handlebars.compile(chatTemplate);
       this.appElement.innerHTML = template({
         conversations: conversations,
         messages: messages,
       });
+    } else {
+      template = Handlebars.compile(notFoundTemplate);
+      this.appElement.innerHTML = template();
     }
   }
 
