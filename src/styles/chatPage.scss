@@ -292,8 +292,10 @@ body {
 }
 
 .message-time {
-  display: block;
-  text-align: right;
+  gap: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
   font-size: 11px;
   color: #999;
@@ -315,12 +317,14 @@ body {
 }
 
 .attach-button {
-  transform: rotate(75deg);
   background: none;
   border: none;
   font-size: 18px;
   cursor: pointer;
   color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .message-input {
