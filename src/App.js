@@ -23,11 +23,11 @@ export default class App {
       this.render("error");
     } else if (path === "/messenger") {
       this.render("chat");
-    } else if (path === "/navigation") {
-      this.render("navigation");
+    } else if (path === "/404") {
+      this.render("notFound");
     } else {
       errorTemplate;
-      this.render("notFound");
+      this.render("navigation");
     }
   }
 
