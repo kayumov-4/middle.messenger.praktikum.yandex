@@ -83,7 +83,11 @@ export default class App {
   addEventListenersToChat() {
     setTimeout(() => {
       const btn = document.getElementById("profileSidebarBtn");
-      if (!btn) return;
+      const chatLogoutBtn = document.getElementById("chatLogoutBtn");
+
+      chatLogoutBtn.addEventListener("click", () => {
+        this.render("login");
+      });
 
       btn.addEventListener("click", () => {
         const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
