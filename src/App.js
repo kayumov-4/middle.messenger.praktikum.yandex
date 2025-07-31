@@ -8,19 +8,21 @@ import navigationTemplate from "./pages/navigationPage.hbs";
 import profileSidebarPartial from "./components/partials/profilePartial.hbs";
 import { conversations, messages } from "./static/mockData";
 
-// Register the sidebar partial
 Handlebars.registerPartial("profileSidebar", profileSidebarPartial);
 
-// User data for the sidebar (can come from API later)
-const userData = {
+Handlebars.registerHelper("equal", function (a, b) {
+  return a === b;
+});
+const profileData = {
   user: {
-    name: "Muhammadjon",
-    email: "test@example.com",
-    login: "muhammad",
+    name: "Muhammad",
+    email: "kayumov4040@gmail.com",
+    login: "kayumov4040",
     firstName: "Muhammad",
     lastName: "Kayumov",
     chatName: "Muhammad",
-    phone: "+998901234567",
+    phone: "+998959774040",
+    profileType: "initial",
   },
 };
 
@@ -72,30 +74,54 @@ export default class App {
         messages: messages,
       });
 
-      // Wait for DOM to load, then bind the profile button
-      setTimeout(() => {
-        const btn = document.getElementById("profileSidebarBtn");
-        if (!btn) return;
-
-        btn.addEventListener("click", () => {
-          const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
-          const html = sidebarTemplate(userData);
-
-          const container = document.createElement("div");
-          container.innerHTML = html;
-          document.body.appendChild(container);
-
-          container
-            .querySelector("#closeProfile")
-            .addEventListener("click", () => container.remove());
-        });
-      }, 0);
+      this.addEventListenersToChat();
     } else {
       template = Handlebars.compile(notFoundTemplate);
       this.appElement.innerHTML = template();
     }
   }
+  addEventListenersToChat() {
+    setTimeout(() => {
+      const btn = document.getElementById("profileSidebarBtn");
+      if (!btn) return;
 
+      btn.addEventListener("click", () => {
+        const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
+        const html = sidebarTemplate(profileData);
+
+        const container = document.createElement("div");
+        container.innerHTML = html;
+        document.body.appendChild(container);
+
+        container
+          .querySelector("#closeProfile")
+          .addEventListener("click", () => container.remove());
+
+        this.addEventListenersToProfile();
+      });
+    }, 0);
+  }
+
+  addEventListenersToProfile() {
+    const changeProfileDataBtn = document.getElementById("changeProfileData");
+    const logOutBtn = document.getElementById("logOut");
+    const saveProfileBtn = document.getElementById("saveProfile");
+    const changeProfilePasswordBtn = document.getElementById(
+      "changeProfilePassword"
+    );
+    if (changeProfileDataBtn) {
+      changeProfileDataBtn.addEventListener("click", () => {
+        profileData.user.profileType = "edit";
+        const inputs = document.querySelectorAll("#profileInfo input");
+        inputs.forEach((input) => (input.disabled = false));
+
+        changeProfileDataBtn.style.display = "none";
+        changeProfilePasswordBtn.style.display = "none";
+        logOutBtn.style.display = "none";
+        saveProfileBtn.style.display = "block";
+      });
+    }
+  }
   setLoginForm() {
     const form = document.getElementById("loginForm");
     if (!form) return;

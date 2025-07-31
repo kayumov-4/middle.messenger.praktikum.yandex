@@ -8,41 +8,42 @@
         <div class="profile-panel">
         <div class="profile-avatar">
             <div class="avatar-circle">
-                <span class="camera-icon">📷</span>
+                <img src="/no-photo.png"/>
             </div>
             <h3 class="profile-name">{{user.name}}</h3>
         </div>
-        <div class="profile-info">
+        <div class="profile-info" id="profileInfo">
             <div class="info-item">
                 <label>Почта</label>
-                <span>{{user.email}}</span>
+                <input type="email" value="{{user.email}}" disabled>
             </div>
             <div class="info-item">
                 <label>Логин</label>
-                <span>{{user.login}}</span>
+                <input type="text" value="{{user.login}}" disabled>
             </div>
             <div class="info-item">
                 <label>Имя</label>
-                <span>{{user.firstName}}</span>
+                <input type="text" value="{{user.firstName}}" disabled>
             </div>
             <div class="info-item">
                 <label>Фамилия</label>
-                <span>{{user.lastName}}</span>
+                <input type="text" value="{{user.lastName}}" disabled>
             </div>
         
             <div class="info-item">
                 <label>Имя в чате</label>
-                <span>{{user.chatName}}</span>
+                <input type="text" value="{{user.chatName}}" disabled>
             </div>
             <div class="info-item">
                 <label>Телефон</label>
-                <span>{{user.phone}}</span>
+                <input type="text" value="{{user.phone}}" disabled>
             </div>
         </div>
         <div class="profile-actions">
-            <button class="action-btn blue">Изменить данные</button>
-            <button class="action-btn blue">Изменить пароль</button>
-            <button class="action-btn red">Выйти</button>
+            <button class="action-btn blue" id="changeProfileData">Изменить данные</button>
+            <button class="action-btn blue" id="changeProfilePassword">Изменить пароль</button>
+            <button class="action-btn red" id="logOut">Выйти</button>
+            <button class="action-btn-save" id="saveProfile">Сохранить</button>
         </div>
     </div>
     </div>

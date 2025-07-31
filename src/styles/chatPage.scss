@@ -366,11 +366,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 18px;
+  gap: 24px;
   button {
     cursor: pointer;
     background: transparent;
     border: none;
+    img {
+      width: 26px;
+      height: 26px;
+    }
   }
 }
 .settings-button,
