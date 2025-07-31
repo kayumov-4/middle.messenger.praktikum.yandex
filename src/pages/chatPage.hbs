@@ -1,32 +1,39 @@
 <div class="chat-container">
   <div class="sidebar">
+   
     <div class="search-container">
       <input type="text" class="search-input" placeholder="Поиск">
     </div>
-    <div class="conversations-list">
-  {{#each conversations}}
-    <div class="conversation-item {{#if active}}-active{{/if}}">
-      <div class="avatar">
-        {{#if avatar}}
-          <img src="{{avatar}}" alt="Аватар" class="avatar-image">
-        {{else}}
-          <img src="/public/user.png" alt="Аватар" class="avatar-image">
-        {{/if}}
-      </div>
-      <div class="conversation-info">
-        <div class="conversation-header">
-          <span class="name">{{name}}</span>
-          <span class="time">{{time}}</span>
-        </div>
-        <div class="last-message">{{lastMessage}}</div>
-      </div>
-      {{#if unreadCount}}
-        <div class="unread-badge">{{unreadCount}}</div>
-      {{/if}}
-    </div>
-  {{/each}}
-</div>
 
+    <div class="conversations-list">
+      {{#each conversations}}
+        <div class="conversation-item {{#if active}}-active{{/if}}">
+          <div class="avatar">
+            {{#if avatar}}
+              <img src="{{avatar}}" alt="Аватар" class="avatar-image">
+            {{else}}
+              <img src="/public/user.png" alt="Аватар" class="avatar-image">
+            {{/if}}
+          </div>
+          <div class="conversation-info">
+            <div class="conversation-header">
+              <span class="name">{{name}}</span>
+              <span class="time">{{time}}</span>
+            </div>
+            <div class="last-message">{{lastMessage}}</div>
+          </div>
+          {{#if unreadCount}}
+            <div class="unread-badge">{{unreadCount}}</div>
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="settings-container">
+      <button class="profile-button" id="profileSidebarBtn"><img src="/profile.svg" alt="Профиль"></button>
+      <button class="settings-button"><img src="/settings.svg" alt="Настройки"></button>
+      <button class="logout-button"><img src="/logout.svg" alt="Выход"></button>
+    </div>
   </div>
   <div class="chat-main">
     <div class="chat-header">
