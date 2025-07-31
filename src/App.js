@@ -10,9 +10,6 @@ import { conversations, messages } from "./static/mockData";
 
 Handlebars.registerPartial("profileSidebar", profileSidebarPartial);
 
-Handlebars.registerHelper("equal", function (a, b) {
-  return a === b;
-});
 const profileData = {
   user: {
     name: "Muhammad",
