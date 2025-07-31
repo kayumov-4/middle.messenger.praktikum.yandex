@@ -5,8 +5,24 @@ import notFoundTemplate from "./pages/404.hbs";
 import errorTemplate from "./pages/500.hbs";
 import chatTemplate from "./pages/chatPage.hbs";
 import navigationTemplate from "./pages/navigationPage.hbs";
-
+import profileSidebarPartial from "./components/partials/profilePartial.hbs";
 import { conversations, messages } from "./static/mockData";
+
+// Register the sidebar partial
+Handlebars.registerPartial("profileSidebar", profileSidebarPartial);
+
+// User data for the sidebar (can come from API later)
+const userData = {
+  user: {
+    name: "Muhammadjon",
+    email: "test@example.com",
+    login: "muhammad",
+    firstName: "Muhammad",
+    lastName: "Kayumov",
+    chatName: "Muhammad",
+    phone: "+998901234567",
+  },
+};
 
 export default class App {
   constructor() {
@@ -26,7 +42,6 @@ export default class App {
     } else if (path === "/404") {
       this.render("notFound");
     } else {
-      errorTemplate;
       this.render("navigation");
     }
   }
@@ -56,6 +71,25 @@ export default class App {
         conversations: conversations,
         messages: messages,
       });
+
+      // Wait for DOM to load, then bind the profile button
+      setTimeout(() => {
+        const btn = document.getElementById("profileSidebarBtn");
+        if (!btn) return;
+
+        btn.addEventListener("click", () => {
+          const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
+          const html = sidebarTemplate(userData);
+
+          const container = document.createElement("div");
+          container.innerHTML = html;
+          document.body.appendChild(container);
+
+          container
+            .querySelector("#closeProfile")
+            .addEventListener("click", () => container.remove());
+        });
+      }, 0);
     } else {
       template = Handlebars.compile(notFoundTemplate);
       this.appElement.innerHTML = template();

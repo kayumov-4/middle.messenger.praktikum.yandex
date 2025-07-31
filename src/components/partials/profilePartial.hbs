@@ -1,0 +1,49 @@
+<div class="profile-sidebar" id="profileSidebar">
+    {{!-- <div class="profile-overlay"></div> --}}
+    
+    <div class="profile-sidebar-container">
+        <div class="profile-back">
+            <button class="back-btn" id="closeProfile"><img src="/arrow-right.svg"/></button>
+        </div>
+        <div class="profile-panel">
+        <div class="profile-avatar">
+            <div class="avatar-circle">
+                <span class="camera-icon">📷</span>
+            </div>
+            <h3 class="profile-name">{{user.name}}</h3>
+        </div>
+        <div class="profile-info">
+            <div class="info-item">
+                <label>Почта</label>
+                <span>{{user.email}}</span>
+            </div>
+            <div class="info-item">
+                <label>Логин</label>
+                <span>{{user.login}}</span>
+            </div>
+            <div class="info-item">
+                <label>Имя</label>
+                <span>{{user.firstName}}</span>
+            </div>
+            <div class="info-item">
+                <label>Фамилия</label>
+                <span>{{user.lastName}}</span>
+            </div>
+        
+            <div class="info-item">
+                <label>Имя в чате</label>
+                <span>{{user.chatName}}</span>
+            </div>
+            <div class="info-item">
+                <label>Телефон</label>
+                <span>{{user.phone}}</span>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <button class="action-btn blue">Изменить данные</button>
+            <button class="action-btn blue">Изменить пароль</button>
+            <button class="action-btn red">Выйти</button>
+        </div>
+    </div>
+    </div>
+</div>

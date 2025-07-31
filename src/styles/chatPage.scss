@@ -308,6 +308,7 @@ body {
 }
 
 .message-input-container {
+  height: 67px;
   display: flex;
   align-items: center;
   padding: 16px 20px;
@@ -357,7 +358,24 @@ body {
 .send-button:hover {
   background: #3367d6;
 }
-
+.settings-container {
+  height: 67px;
+  padding: 16px;
+  background: white;
+  border-top: 1px solid #e1e5e9;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  button {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+  }
+}
+.settings-button,
+.logout-button {
+}
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
