@@ -39,6 +39,21 @@
                 <input type="text" value="{{user.phone}}" disabled>
             </div>
         </div>
+
+        <div class="profile-info" style="display: none;" id="profileChangePassword">
+            <div class="info-item">
+                <label>Старый пароль</label>
+                <input type="password" value="{{user.oldPassword}}">
+            </div>
+            <div class="info-item">
+                <label>Новый пароль</label>
+                <input type="password" value="{{user.newPassword}}">
+            </div>
+            <div class="info-item">
+                <label>Повторите новый пароль</label>
+                <input type="password" value="{{user.confirmNewPassword}}">
+            </div>
+        </div>
         <div class="profile-actions">
             <button class="action-btn blue" id="changeProfileData">Изменить данные</button>
             <button class="action-btn blue" id="changeProfilePassword">Изменить пароль</button>
