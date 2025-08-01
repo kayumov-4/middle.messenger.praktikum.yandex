@@ -1,12 +1,7 @@
 import Handlebars from "handlebars";
-import loginTemplate from "./pages/loginPage.hbs";
-import registerTemplate from "./pages/registerPage.hbs";
-import notFoundTemplate from "./pages/404.hbs";
-import errorTemplate from "./pages/500.hbs";
-import chatTemplate from "./pages/chatPage.hbs";
-import navigationTemplate from "./pages/navigationPage.hbs";
 import profileSidebarPartial from "./components/partials/profilePartial.hbs";
 import { conversations, messages } from "./static/mockData";
+import * as Pages from "./pages";
 
 Handlebars.registerPartial("profileSidebar", profileSidebarPartial);
 
@@ -53,26 +48,26 @@ export default class App {
   render(page) {
     let template;
     if (page === "navigation") {
-      template = Handlebars.compile(navigationTemplate);
+      template = Handlebars.compile(Pages.NavigationPage);
       this.appElement.innerHTML = template();
     } else if (page === "login") {
-      template = Handlebars.compile(loginTemplate);
+      template = Handlebars.compile(Pages.LoginPage);
       this.appElement.innerHTML = template();
       this.setLoginForm();
       this.setLoginFormListeners();
     } else if (page === "register") {
-      template = Handlebars.compile(registerTemplate);
+      template = Handlebars.compile(Pages.RegistrationPage);
       this.appElement.innerHTML = template();
       this.setRegistrationForm();
       this.setRegistrationFormListeners();
     } else if (page === "notFound") {
-      template = Handlebars.compile(notFoundTemplate);
+      template = Handlebars.compile(Pages.NotFoundPage);
       this.appElement.innerHTML = template();
     } else if (page === "error") {
-      template = Handlebars.compile(errorTemplate);
+      template = Handlebars.compile(Pages.ErrorPage);
       this.appElement.innerHTML = template();
     } else if (page === "chat") {
-      template = Handlebars.compile(chatTemplate);
+      template = Handlebars.compile(Pages.ChatPage);
       this.appElement.innerHTML = template({
         conversations: conversations,
         messages: messages,
@@ -80,7 +75,7 @@ export default class App {
 
       this.addEventListenersToChat();
     } else {
-      template = Handlebars.compile(notFoundTemplate);
+      template = Handlebars.compile(Pages.NotFoundPage);
       this.appElement.innerHTML = template();
     }
   }
@@ -96,14 +91,23 @@ export default class App {
       btn.addEventListener("click", () => {
         const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
         const html = sidebarTemplate(profileData);
-
-        const container = document.createElement("div");
+        let container = document.querySelector(".profileSidebarContainer");
+        if (!container) {
+          const newContainer = document.createElement("div");
+          newContainer.classList.add("profileSidebarContainer");
+          document.body.appendChild(newContainer);
+          container = newContainer;
+        }
         container.innerHTML = html;
         document.body.appendChild(container);
 
         container
           .querySelector("#closeProfile")
-          .addEventListener("click", () => container.remove());
+          .addEventListener("click", () =>
+            document
+              .getElementById("profileSidebar")
+              .classList.add("remove-profile-sidebar")
+          );
 
         this.addEventListenersToProfile();
       });

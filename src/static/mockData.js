@@ -96,7 +96,7 @@ export const conversations = [
     lastMessage: "Вы: Круто!",
     time: "Пт",
     avatar: "/user.png",
-    active: true,
+    active: false,
   },
   {
     id: 14,
