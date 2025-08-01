@@ -1,5 +1,5 @@
 <div class="profile-sidebar" id="profileSidebar">
-    {{!-- <div class="profile-overlay"></div> --}}
+    <div class="profile-overlay"></div>
     
     <div class="profile-sidebar-container">
         <div class="profile-back">
@@ -37,6 +37,21 @@
             <div class="info-item">
                 <label>Телефон</label>
                 <input type="text" value="{{user.phone}}" disabled>
+            </div>
+        </div>
+
+        <div class="profile-info" style="display: none;" id="profileChangePassword">
+            <div class="info-item">
+                <label>Старый пароль</label>
+                <input type="password" value="{{user.oldPassword}}">
+            </div>
+            <div class="info-item">
+                <label>Новый пароль</label>
+                <input type="password" value="{{user.newPassword}}">
+            </div>
+            <div class="info-item">
+                <label>Повторите новый пароль</label>
+                <input type="password" value="{{user.confirmNewPassword}}">
             </div>
         </div>
         <div class="profile-actions">

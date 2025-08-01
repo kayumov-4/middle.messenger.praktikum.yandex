@@ -10,9 +10,6 @@ import { conversations, messages } from "./static/mockData";
 
 Handlebars.registerPartial("profileSidebar", profileSidebarPartial);
 
-Handlebars.registerHelper("equal", function (a, b) {
-  return a === b;
-});
 const profileData = {
   user: {
     name: "Muhammad",
@@ -23,6 +20,9 @@ const profileData = {
     chatName: "Muhammad",
     phone: "+998959774040",
     profileType: "initial",
+    oldPassword: "123456",
+    newPassword: "",
+    confirmNewPassword: "",
   },
 };
 
@@ -43,6 +43,8 @@ export default class App {
       this.render("chat");
     } else if (path === "/404") {
       this.render("notFound");
+    } else if (path === "/navigation") {
+      this.render("navigation");
     } else {
       this.render("navigation");
     }
@@ -57,10 +59,12 @@ export default class App {
       template = Handlebars.compile(loginTemplate);
       this.appElement.innerHTML = template();
       this.setLoginForm();
+      this.setLoginFormListeners();
     } else if (page === "register") {
       template = Handlebars.compile(registerTemplate);
       this.appElement.innerHTML = template();
       this.setRegistrationForm();
+      this.setRegistrationFormListeners();
     } else if (page === "notFound") {
       template = Handlebars.compile(notFoundTemplate);
       this.appElement.innerHTML = template();
@@ -83,7 +87,11 @@ export default class App {
   addEventListenersToChat() {
     setTimeout(() => {
       const btn = document.getElementById("profileSidebarBtn");
-      if (!btn) return;
+      const chatLogoutBtn = document.getElementById("chatLogoutBtn");
+
+      chatLogoutBtn.addEventListener("click", () => {
+        this.render("login");
+      });
 
       btn.addEventListener("click", () => {
         const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
@@ -121,6 +129,22 @@ export default class App {
         saveProfileBtn.style.display = "block";
       });
     }
+
+    if (changeProfilePasswordBtn) {
+      changeProfilePasswordBtn.addEventListener("click", () => {
+        profileData.user.profileType = "changePassword";
+        const profileInfo = document.querySelector("#profileInfo");
+        profileInfo.style.display = "none";
+        const changePasswordFields = document.querySelector(
+          "#profileChangePassword"
+        );
+        changePasswordFields.style.display = "block";
+        changeProfileDataBtn.style.display = "none";
+        changeProfilePasswordBtn.style.display = "none";
+        logOutBtn.style.display = "none";
+        saveProfileBtn.style.display = "block";
+      });
+    }
   }
   setLoginForm() {
     const form = document.getElementById("loginForm");
@@ -135,7 +159,17 @@ export default class App {
       });
     });
   }
-
+  setLoginFormListeners() {
+    const loginPageNoAccountBtn = document.getElementById(
+      "loginPageNoAccountBtn"
+    );
+    if (loginPageNoAccountBtn) {
+      loginPageNoAccountBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.render("register");
+      });
+    }
+  }
   setRegistrationForm() {
     const form = document.getElementById("registerForm");
     if (!form) return;
@@ -145,5 +179,16 @@ export default class App {
       const formData = new FormData(form);
       console.log("Registration data:", Object.fromEntries(formData));
     });
+  }
+  setRegistrationFormListeners() {
+    const registrationHasAccountBtn = document.getElementById(
+      "registrationHasAccountBtn"
+    );
+    if (registrationHasAccountBtn) {
+      registrationHasAccountBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.render("login");
+      });
+    }
   }
 }
