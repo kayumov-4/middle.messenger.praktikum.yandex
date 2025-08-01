@@ -10,8 +10,11 @@
 
     <div class="profile__panel">
       <div class="profile__avatar">
-        <div class="profile__avatar-circle">
+        <div class="profile__avatar-circle" id="changeAvatar">
           <img src="/no-photo.png" alt="Avatar" />
+          <div class="profile__avatar-circle-overlay" style="display: none;">
+            Поменять аватар
+          </div>
         </div>
         <h3 class="profile__name">{{user.name}}</h3>
       </div>

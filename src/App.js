@@ -1,10 +1,11 @@
 import Handlebars from "handlebars";
 import profileSidebarPartial from "./components/partials/profilePartial.hbs";
+import changeAvatarFormPartial from "./components/partials/changeAvatarModalPartial.hbs";
 import { conversations, messages } from "./static/mockData";
 import * as Pages from "./pages";
 
-Handlebars.registerPartial("profileSidebar", profileSidebarPartial);
-
+Handlebars.registerPartial("profileSidebarPartial", profileSidebarPartial);
+Handlebars.registerPartial("changeAvatarFormPartial", changeAvatarFormPartial);
 const profileData = {
   user: {
     name: "Muhammad",
@@ -71,6 +72,7 @@ export default class App {
       this.appElement.innerHTML = template({
         conversations: conversations,
         messages: messages,
+        currentUser: "Мухаммад",
       });
 
       this.addEventListenersToChat();
@@ -89,7 +91,9 @@ export default class App {
       });
 
       btn.addEventListener("click", () => {
-        const sidebarTemplate = Handlebars.compile("{{> profileSidebar }}");
+        const sidebarTemplate = Handlebars.compile(
+          "{{> profileSidebarPartial }}"
+        );
         const html = sidebarTemplate(profileData);
         let container = document.querySelector(".profileSidebarContainer");
         if (!container) {
@@ -121,6 +125,7 @@ export default class App {
     const changeProfilePasswordBtn = document.getElementById(
       "changeProfilePassword"
     );
+    const changeAvatarBtn = document.getElementById("changeAvatar");
     if (changeProfileDataBtn) {
       changeProfileDataBtn.addEventListener("click", () => {
         profileData.user.profileType = "edit";
@@ -147,6 +152,32 @@ export default class App {
         changeProfilePasswordBtn.style.display = "none";
         logOutBtn.style.display = "none";
         saveProfileBtn.style.display = "block";
+      });
+    }
+
+    if (changeAvatarBtn) {
+      changeAvatarBtn.addEventListener("click", () => {
+        const changeAvatarTemplate = Handlebars.compile(
+          "{{> changeAvatarFormPartial }}"
+        );
+        const html = changeAvatarTemplate();
+        let container = document.querySelector(".changeAvatarContainer");
+        if (!container) {
+          const newContainer = document.createElement("div");
+          newContainer.classList.add("changeAvatarContainer");
+          document.body.appendChild(newContainer);
+          container = newContainer;
+        }
+        container.innerHTML = html;
+        document.body.appendChild(container);
+
+        container
+          .querySelector("#closeChangeAvatarModal")
+          .addEventListener("click", () =>
+            document
+              .querySelector(".change-avatar-modal")
+              .classList.add("remove-change-avatar-modal")
+          );
       });
     }
   }
