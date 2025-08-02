@@ -8,6 +8,9 @@ export default defineConfig({
     port: 3000,
     middlewareMode: true,
   },
+  preview: {
+    port: 3000,
+  },
   plugins: [
     {
       name: "spa-fallback",
