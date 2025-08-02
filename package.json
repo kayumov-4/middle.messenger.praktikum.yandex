@@ -12,6 +12,7 @@
     "start": "vite preview"
   },
   "devDependencies": {
+    "connect-history-api-fallback": "^2.0.0",
     "sass-embedded": "^1.89.2",
     "vite": "^7.0.4",
     "vite-plugin-string": "^1.2.3"
