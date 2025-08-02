@@ -5,6 +5,10 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  server: {
+    port: 3000,
+    strictPort: true,
+  },
   build: {
     rollupOptions: {
       input: {
@@ -17,4 +21,11 @@ export default defineConfig({
       include: ["**/*.hbs"],
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "/src/style.css";`,
+      },
+    },
+  },
 });
