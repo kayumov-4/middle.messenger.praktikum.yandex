@@ -1,18 +1,20 @@
-import { fileURLToPath } from "node:url";
-import { dirname, resolve } from "node:path";
-import vitePluginString from "vite-plugin-string";
 import { defineConfig } from "vite";
+import vitePluginString from "vite-plugin-string";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   server: {
     port: 3000,
   },
   build: {
+    outDir: "dist",
     rollupOptions: {
-      input: resolve(__dirname, "index.html"),
+      input: {
+        main: resolve(__dirname, "index.html"),
+      },
     },
   },
   plugins: [
@@ -20,4 +22,11 @@ export default defineConfig({
       include: ["**/*.hbs"],
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "/src/style.css";`,
+      },
+    },
+  },
 });
