@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "vite preview"
+    "preview": "vite preview",
+    "start": "vite preview --port 3000"
   },
   "engines": {
     "node": ">=18.0.0"
