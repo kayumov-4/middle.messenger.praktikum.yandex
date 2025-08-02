@@ -10,12 +10,10 @@ export default defineConfig({
     port: 3000,
   },
   build: {
-    outDir: "dist",
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, "index.html"),
-      },
+      input: resolve(__dirname, "index.html"),
     },
+    outDir: "dist",
   },
   plugins: [
     vitePluginString({
