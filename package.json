@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "engine": {
-    "node": "24.0.0"
+    "node": "24.0.0",
+    "start": "vite preview"
   },
   "scripts": {
     "dev": "vite",
