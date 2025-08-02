@@ -8,6 +8,9 @@
     "build": "vite build",
     "start": "vite preview"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
     "sass-embedded": "^1.89.2",
     "vite": "^7.0.4",
