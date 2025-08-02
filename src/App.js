@@ -126,6 +126,21 @@ export default class App {
       "changeProfilePassword"
     );
     const changeAvatarBtn = document.getElementById("changeAvatar");
+    if (logOutBtn) {
+      logOutBtn.addEventListener("click", () => {
+        this.render("login");
+        document
+          .getElementById("profileSidebar")
+          .classList.add("remove-profile-sidebar");
+
+        setTimeout(() => {
+          const container = document.querySelector(".profileSidebarContainer");
+          if (container) {
+            container.remove();
+          }
+        }, 1000);
+      });
+    }
     if (changeProfileDataBtn) {
       changeProfileDataBtn.addEventListener("click", () => {
         profileData.user.profileType = "edit";
