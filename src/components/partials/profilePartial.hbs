@@ -19,47 +19,47 @@
         <h3 class="profile__name">{{user.name}}</h3>
       </div>
 
-      <div class="profile__info" id="profileInfo">
+      <form class="profile__info" id="profileInfo">
         <div class="profile__info-item">
           <label>Почта</label>
-          <input type="email" value="{{user.email}}" disabled />
+          <input type="email" name="email" value="{{user.email}}" disabled />
         </div>
         <div class="profile__info-item">
           <label>Логин</label>
-          <input type="text" value="{{user.login}}" disabled />
+          <input type="text" name="login" value="{{user.login}}" disabled />
         </div>
         <div class="profile__info-item">
           <label>Имя</label>
-          <input type="text" value="{{user.firstName}}" disabled />
+          <input type="text" name="first_name" value="{{user.firstName}}" disabled />
         </div>
         <div class="profile__info-item">
           <label>Фамилия</label>
-          <input type="text" value="{{user.lastName}}" disabled />
+          <input type="text" name="second_name" value="{{user.lastName}}" disabled />
         </div>
         <div class="profile__info-item">
           <label>Имя в чате</label>
-          <input type="text" value="{{user.chatName}}" disabled />
+          <input type="text" name="display_name" value="{{user.chatName}}" disabled />
         </div>
         <div class="profile__info-item">
           <label>Телефон</label>
-          <input type="text" value="{{user.phone}}" disabled />
+          <input type="text" name="phone" value="{{user.phone}}" disabled />
         </div>
-      </div>
+      </form>
 
-      <div class="profile__info profile__info--password" id="profileChangePassword" style="display: none;">
+      <form class="profile__info profile__info--password" id="profileChangePassword" style="display: none;">
         <div class="profile__info-item">
           <label>Старый пароль</label>
-          <input type="password" value="{{user.oldPassword}}" />
+          <input type="password" name="oldPassword" value="{{user.oldPassword}}" />
         </div>
         <div class="profile__info-item">
           <label>Новый пароль</label>
-          <input type="password" value="{{user.newPassword}}" />
+          <input type="password" name="newPassword" value="{{user.newPassword}}" />
         </div>
         <div class="profile__info-item">
           <label>Повторите новый пароль</label>
-          <input type="password" value="{{user.confirmNewPassword}}" />
+          <input type="password" name="confirmPassword" value="{{user.confirmNewPassword}}" />
         </div>
-      </div>
+      </form>
 
       <div class="profile__actions">
         <button class="profile__action profile__action--blue" id="changeProfileData">Изменить данные</button>
