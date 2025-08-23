@@ -37,16 +37,6 @@ jobs:
       - name: Get testing lib
         run: git clone https://github.com/Yandex-Practicum/tests-middle-frontend.git /tmp/tests-middle-frontend
 
-      - name: Wait for server
-        run: sleep 10
-
-      - name: Build the project
-        run: npm run build
-
-      - name: Start preview server in background
-        run: |
-          npm run start
-
       - name: Run tests (sprint_1)
         if: ${{github.head_ref >= 'sprint_1'}}
         run: bats --formatter pretty /tmp/tests-middle-frontend/tests/sprint_1.bats
@@ -65,3 +55,11 @@ jobs:
 
       - name: Run tests (server)
         run: bats --formatter pretty /tmp/tests-middle-frontend/tests/node_build.bats
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Start preview server in background
+        run: |
+          npm run start &
+          sleep 5
