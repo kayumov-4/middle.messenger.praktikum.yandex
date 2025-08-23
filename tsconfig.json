@@ -14,7 +14,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "sourceMap": true
   },
   "include": ["src", "vite-env.d.ts", "core/**/*.ts", "utils/**/*"]
 }
