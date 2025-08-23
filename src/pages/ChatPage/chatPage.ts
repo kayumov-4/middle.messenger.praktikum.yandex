@@ -54,6 +54,18 @@ export default class ChatPage extends Page {
         blur: (e) => this.checkInputValue("message", e),
       },
     }),
+    sendMessageButton: new Button({
+      label: "",
+      type: "button",
+      className: "chat__send-button",
+      id: "sendButton",
+      image: "/arrow-right.svg",
+      onClick: (e) => {
+        e.preventDefault();
+        this.checkFormValues("sendMessageForm");
+        ToastService.getInstance().show(`Сообщение отправлено`, "success");
+      },
+    }),
     chatProfileBtn: new Button({
       label: "",
       type: "button",
@@ -98,7 +110,23 @@ export default class ChatPage extends Page {
       ToastService.getInstance().show(errorData.message, "error");
     }
   }
+  protected checkFormValues(formId: string) {
+    const box = document.getElementById(formId) as HTMLFormElement;
+    if (box) {
+      const boxData = new FormData(box);
+      const inputs: Record<string, string> = {};
 
+      boxData.forEach((value, key) => {
+        inputs[key] = value.toString();
+        const validation = inputValidator(key, value.toString());
+        if (!validation.isValid) {
+          ToastService.getInstance().show(validation.message, "error");
+        } else {
+          console.log(inputs);
+        }
+      });
+    }
+  }
   private openProfileSidebar() {
     let container = document.querySelector(".profileSidebarContainer");
     if (!container) {

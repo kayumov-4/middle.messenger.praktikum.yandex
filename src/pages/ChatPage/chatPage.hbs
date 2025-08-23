@@ -66,15 +66,16 @@
         </div>
         {{/each}}
       </div>
-      <div class="chat__input">
+      <form id="sendMessageForm" class="chat__input">
         <button class="chat__attach-button">
           <img src="/skripka.svg">
         </button>
         <div id="messageInput"></div>
-        <button class="chat__send-button" id="sendButton">
+        <div id="sendMessageButton"></div>
+        {{!-- <button class="chat__send-button" id="sendButton">
           <img src="/arrow-right.svg">
-        </button>
-      </div>
+        </button> --}}
+      </form>
     </div>
   </div>
 </div>
