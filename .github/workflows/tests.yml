@@ -49,10 +49,6 @@ jobs:
         if: ${{github.head_ref >= 'sprint_1'}}
         run: bats --formatter pretty /tmp/tests-middle-frontend/tests/sprint_1.bats
 
-      - name: Run tests (sprint_2)
-        if: ${{github.head_ref >= 'sprint_2'}}
-        run: bats --formatter pretty /tmp/tests-middle-frontend/tests/sprint_2.bats
-
       - name: Run tests (sprint_3)
         if: ${{github.head_ref >= 'sprint_3'}}
         run: bats --formatter pretty /tmp/tests-middle-frontend/tests/sprint_3.bats
@@ -60,6 +56,10 @@ jobs:
       - name: Run tests (sprint_4)
         if: ${{github.head_ref >= 'sprint_4'}}
         run: bats --formatter pretty /tmp/tests-middle-frontend/tests/sprint_4.bats
+
+      - name: Run tests (sprint_2)
+        if: ${{github.head_ref >= 'sprint_2'}}
+        run: bats --formatter pretty /tmp/tests-middle-frontend/tests/sprint_2.bats
 
       - name: Run tests (server)
         run: bats --formatter pretty /tmp/tests-middle-frontend/tests/node_build.bats
