@@ -38,7 +38,7 @@ jobs:
         run: git clone https://github.com/Yandex-Practicum/tests-middle-frontend.git /tmp/tests-middle-frontend
 
       - name: Wait for server
-        run: sleep 5
+        run: sleep 10
 
       - name: Build the project
         run: npm run build
