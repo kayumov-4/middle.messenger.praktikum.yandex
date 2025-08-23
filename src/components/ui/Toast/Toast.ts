@@ -37,6 +37,11 @@ export default class Toast extends Block<ToastProps> {
   }
 
   hide() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
+    }
+
     const el = this.getContent();
     if (el) {
       el.classList.add("toast--hide");
