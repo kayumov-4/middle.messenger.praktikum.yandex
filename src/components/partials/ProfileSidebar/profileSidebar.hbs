@@ -1,0 +1,47 @@
+<div class="profile" id="profileSidebar">
+  <div class="profile__overlay"></div>
+  <div id="changeAvatarModal"></div>
+
+  <div class="profile__container">
+    <div class="profile__back">
+      <div id="closeProfile"></div>
+    </div>
+
+    <div class="profile__panel">
+      <div class="profile__avatar">
+        <div id="changeAvatar"></div>
+        {{!-- <div class="profile__avatar-circle">
+          <img src="/no-photo.png" alt="Avatar" />
+          <div class="profile__avatar-circle-overlay" style="display: none;">
+            Поменять аватар
+          </div>
+        </div> --}}
+        <h3 class="profile__name">{{user.name}}</h3>
+      </div>
+
+
+      <form class="profile__info" id="profileInfo">
+        <div id="emailInput"></div>
+        <div id="loginInput"></div>
+        <div id="firstNameInput"></div>
+        <div id="secondNameInput"></div>
+        <div id="displayNameInput"></div>
+        <div id="phoneInput"></div>
+      </form>
+
+      <form class="profile__info profile__info--password" id="profileChangePassword" style="display: none;">
+        <div id="oldPasswordInput"></div>
+        <div id="newPasswordInput"></div>
+        <div id="confirmNewPasswordInput"></div>
+      </form>
+
+      <div class="profile__actions">
+        <button class="profile__action profile__action--blue" id="changeProfileData">Изменить данные</button>
+        <button class="profile__action profile__action--blue" id="changeProfilePassword">Изменить пароль</button>
+        <button class="profile__action profile__action--red" id="logOut">Выйти</button>
+        <button class="profile__save-btn" id="saveProfile">Сохранить</button>
+        <button class="profile__save-btn" id="saveProfilePassword">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>

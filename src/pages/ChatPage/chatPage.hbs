@@ -1,0 +1,80 @@
+<div class="chat">
+  <div class="chat__container">
+    <div class="chat__sidebar">
+      <div class="chat__search">
+        <div id="chatSearchInput"></div>
+      </div>
+      <div class="chat__conversations">
+        {{#each conversations}}
+          <div class="chat__conversation-item {{#if active}}--active{{/if}}">
+            <div class="chat__avatar">
+              {{#if avatar}}
+                <img src="{{avatar}}" alt="Аватар" class="chat__avatar-image">
+              {{else}}
+                <img src="/public/user.png" alt="Аватар" class="chat__avatar-image">
+              {{/if}}
+            </div>
+            <div class="chat__conversation-info">
+              <div class="chat__conversation-header">
+                <span class="chat__name">{{name}}</span>
+                <span class="chat__time">{{time}}</span>
+              </div>
+              <div class="chat__last-message">{{lastMessage}}</div>
+            </div>
+            {{#if unreadCount}}
+              <div class="chat__unread-badge">{{unreadCount}}</div>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+      <div class="chat__settings">
+        <button id="chatProfileBtn"></button>
+        <button id="chatSettingsBtn"></button>
+        <button id="chatLogoutBtn"></button>
+      </div>
+    </div>
+    <div class="chat__main">
+      <div class="chat__main-header">
+        <div class="chat__breadcrumb">
+          <span class="chat__current">{{currentUser}}</span>
+        </div>
+        <button class="chat__menu-button"></button>
+      </div>
+      <div class="chat__messages" id="messagesContainer">
+        <div class="chat__date-separator">
+          <p class="chat__date-text">19 июня</p>
+        </div>
+        {{#each messages}}
+        <div class="chat__message{{#if type}} --{{type}}{{/if}}">
+          <div class="chat__message-content">
+            {{#if image}}
+            <div class="chat__message-image">
+              <img src="{{image}}" alt="Изображение">
+              <div class="chat__image-duration">{{imageDuration}}</div>
+            </div>
+            {{/if}}
+
+            <div class="chat__message-text">
+              <p>{{text}}</p>
+            </div>
+
+            <span class="chat__message-time">
+              <img src="/viewed.svg">
+              {{time}}
+            </span>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      <div class="chat__input">
+        <button class="chat__attach-button">
+          <img src="/skripka.svg">
+        </button>
+        <div id="messageInput"></div>
+        <button class="chat__send-button" id="sendButton">
+          <img src="/arrow-right.svg">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
