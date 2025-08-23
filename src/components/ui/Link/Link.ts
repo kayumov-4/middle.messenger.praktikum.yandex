@@ -1,5 +1,6 @@
 import Block from "../../../../core/Block";
 import template from "./Link.hbs?raw";
+import "./Link.scss";
 
 interface LinkProps {
   href: string;
