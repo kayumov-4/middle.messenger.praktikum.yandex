@@ -1,0 +1,12 @@
+<div class="{{wrapperClassName}}">
+    <label class="{{labelClassName}}" style="display: block;font-size: 14px;color: #666;font-weight: 400;" for="{{name}}">{{label}}</label>
+    <input id="{{id}}" name="{{name}}" type="{{type}}" accept="{{accept}}" class="{{className}}" placeholder="{{placeholder}}"
+    {{#if autocomplete}} autocomplete="{{autocomplete}}" {{/if}}
+    {{#if value}} value="{{value}}" {{/if}}
+    {{#if required}} required {{/if}}
+    {{#if disabled}} disabled {{/if}}
+  />
+  {{#if error}}
+    <span class="input-error">{{error}}</span>
+  {{/if}}
+</div>

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
 declare module "*.hbs" {
-  const content: string;
+  const content: (context?: any) => string;
   export default content;
 }
