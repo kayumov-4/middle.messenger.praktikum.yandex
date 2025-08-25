@@ -15,6 +15,11 @@ type Options = {
 
 type OptionsWithoutMethod = Omit<Options, "method">;
 
+type HTTPMethod = <R = unknown>(
+  endpoint: string,
+  options?: OptionsWithoutMethod
+) => Promise<R>;
+
 function queryStringify(data: Record<string, any>): string {
   const keys = Object.keys(data);
   return keys.length
@@ -44,38 +49,19 @@ export class UseFetch {
     );
   }
 
-  get(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.GET });
-  }
+  get: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.GET });
 
-  post(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.POST });
-  }
+  post: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.POST });
 
-  put(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.PUT });
-  }
+  put: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.PUT });
 
-  delete(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.DELETE });
-  }
+  delete: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.DELETE });
 
-  request(
-    endpoint: string,
-    options: Options = { method: METHOD.GET }
-  ): Promise<XMLHttpRequest> {
+  private request<R = unknown>(endpoint: string, options: Options): Promise<R> {
     const { method, data, headers = {}, timeout = 5000 } = options;
 
     return new Promise((resolve, reject) => {
@@ -93,7 +79,18 @@ export class UseFetch {
         xhr.setRequestHeader(key, value);
       });
 
-      xhr.onload = () => resolve(xhr);
+      xhr.onload = () => {
+        try {
+          const response = xhr
+            .getResponseHeader("Content-Type")
+            ?.includes("application/json")
+            ? JSON.parse(xhr.responseText)
+            : xhr.responseText;
+          resolve(response as R);
+        } catch (e) {
+          reject(e);
+        }
+      };
       xhr.onabort = reject;
       xhr.onerror = reject;
       xhr.ontimeout = reject;
