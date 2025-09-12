@@ -2,7 +2,6 @@ import Page from "../../../core/Page";
 import Router from "../../../core/Router";
 import AuthStore from "../../stores/AuthStore";
 import ProfileSidebar from "../../components/partials/ProfileSidebar/profileSidebar";
-import "./settingsPage.scss";
 
 export default class SettingsPage extends Page {
   private profileSidebar: ProfileSidebar | null = null;

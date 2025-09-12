@@ -16,7 +16,8 @@
     "skipLibCheck": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src", "vite-env.d.ts", "core/**/*.ts", "utils/**/*"]
 }

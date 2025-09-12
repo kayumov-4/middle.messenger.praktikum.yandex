@@ -4,15 +4,24 @@ import Block from "./Block";
 export default class Page<
   P extends Record<string, any> = Record<string, any>
 > extends Block<P> {
-  private template: string;
+  protected template: string;
   public props: P;
   private components: Record<string, Block<any>> = {};
   protected root: HTMLElement | null = null;
 
-  constructor(template: string, props: P) {
-    super("main", props);
-    this.template = template;
-    this.props = props;
+  // 🔹 Dual constructor pattern
+  constructor(arg1?: string | P, arg2?: P) {
+    if (typeof arg1 === "string") {
+      // arg1 = template, arg2 = props
+      super("main", arg2 || ({} as P));
+      this.template = arg1;
+      this.props = arg2 || ({} as P);
+    } else {
+      // arg1 = props, arg2 = undefined
+      super("main", arg1 || ({} as P));
+      this.template = "";
+      this.props = arg1 || ({} as P);
+    }
   }
 
   protected initComponents(components: Record<string, Block<any>> = {}) {
@@ -41,7 +50,6 @@ export default class Page<
       const target = root.querySelector<HTMLElement>(
         `[data-slot="${slot}"], #${slot}`
       );
-
       if (!target) {
         console.warn(`Slot "${slot}" not found on page`);
         return;

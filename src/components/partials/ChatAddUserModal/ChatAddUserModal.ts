@@ -13,13 +13,10 @@ interface ChatAddUserModalProps {
   visible?: boolean;
   children?: { [key: string]: Block<any> };
   events?: Record<string, (e: Event) => void>;
-  addUserBtn?: Button;
-  addUserInput?: Input;
 }
 
 export class ChatAddUserModal extends Block<ChatAddUserModalProps> {
   private addUserInput!: Input;
-  private addUserBtn!: Button;
 
   constructor(props: ChatAddUserModalProps) {
     const addUserInput = new Input({
@@ -57,8 +54,8 @@ export class ChatAddUserModal extends Block<ChatAddUserModalProps> {
         },
       },
     });
+
     this.addUserInput = addUserInput;
-    this.addUserBtn = addUserBtn;
   }
 
   public show(chatId: number) {

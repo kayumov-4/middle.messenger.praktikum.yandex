@@ -55,7 +55,6 @@ export default class Router {
 
   public start() {
     this.setPageFromPath(window.location.pathname + window.location.search);
-
     window.addEventListener("popstate", () => {
       this.setPageFromPath(window.location.pathname + window.location.search);
     });
@@ -100,16 +99,13 @@ export default class Router {
       return;
     }
 
-    // redirect
     if (route.redirect) {
       this.replace(route.redirect);
       return;
     }
 
-    // params
     const params = this.extractParams(pathname, route.path);
 
-    // guard
     if (route.guard) {
       const result = route.guard(params);
       if (result === false) return;
@@ -121,7 +117,6 @@ export default class Router {
 
     let PageClass: PageClass;
 
-    // agar lazy load bo‘lsa (ya’ni Promise qaytaradigan function)
     if (
       typeof route.page === "function" &&
       (route.page as any).prototype === undefined
@@ -136,6 +131,7 @@ export default class Router {
       params,
       query: Object.fromEntries(searchParams),
     });
+
     this.setPage(page);
   }
 
