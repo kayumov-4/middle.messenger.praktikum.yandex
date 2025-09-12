@@ -2,7 +2,7 @@ import Block from "../../../../core/Block";
 import Button from "../../ui/Button/Button";
 import Input from "../../ui/Input/Input";
 import template from "./CreateChatModal.hbs";
-import "./createChatModal.scss";
+import "./CreateChatModal.scss";
 
 interface CreateChatModalProps {
   onSave: (title: string) => void;
