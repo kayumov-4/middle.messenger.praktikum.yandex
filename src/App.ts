@@ -5,7 +5,21 @@ import NavigationPage from "./pages/NavigationPage/navigationPage";
 import ErrorPage from "./pages/ErrorPage/500";
 import Router from "../core/Router";
 import ChatPage from "./pages/ChatPage/chatPage";
+import AuthStore from "./stores/AuthStore";
+import { UseFetch } from "../utils/useFetch";
+import ToastService from "../utils/toastService";
+import SettingsPage from "./pages/SettingsPage/settingsPage";
 
+async function initAuth() {
+  try {
+    const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+    const user = await api.get("/auth/user");
+    AuthStore.getInstance().setUser(user);
+  } catch (e: any) {
+    ToastService.getInstance().show(e.message, "error");
+    AuthStore.getInstance().clear();
+  }
+}
 export default class App {
   private router: Router;
 
@@ -13,14 +27,27 @@ export default class App {
     this.router = new Router(rootSelector);
   }
 
-  public start() {
+  public async start() {
+    await initAuth();
     this.router
       .use("/", NavigationPage)
       .use("/404", NotFoundPage)
       .use("/500", ErrorPage)
-      .use("/login", LoginPage)
-      .use("/register", RegisterPage)
-      .use("/messenger", ChatPage)
+      .use("/sign-in", LoginPage)
+      .use("/sign-up", RegisterPage)
+      .use("/messenger", ChatPage, () => {
+        if (!AuthStore.getInstance().getUser()) {
+          return "/sign-in";
+        }
+        return true;
+      })
+      .use("/settings", SettingsPage, () => {
+        if (!AuthStore.getInstance().getUser()) {
+          return "/sign-in";
+        }
+        return true;
+      })
+
       .start();
 
     this.initToastRoot();

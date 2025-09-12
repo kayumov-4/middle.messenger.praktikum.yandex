@@ -1,4 +1,5 @@
 export interface UserProfile {
+  id: number;
   name: string;
   email: string;
   login: string;
@@ -10,6 +11,7 @@ export interface UserProfile {
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
+  avatar?: string;
 }
 
 export interface ProfileData {

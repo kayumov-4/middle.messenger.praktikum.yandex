@@ -7,6 +7,10 @@ import { ChangeAvatarModal } from "../ChangeAvatarModal/changeAvatarModal";
 import Avatar from "../../ui/Avatar/Avatar";
 import { inputValidator } from "../../../../utils/validator";
 import ToastService from "../../../../utils/toastService";
+import { UseFetch } from "../../../../utils/useFetch";
+import AuthStore from "../../../stores/AuthStore";
+import Router from "../../../../core/Router";
+import { UserProfile } from "../../../entities/interfaces/UserProfile";
 
 export interface ProfileSidebarProps {
   children: any;
@@ -30,15 +34,48 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
   constructor(props: ProfileSidebarProps) {
     const children = {
       changeAvatarModal: new ChangeAvatarModal({
-        onSave: (file: File) => {
-          console.log("Yuklangan fayl:", file);
+        onSave: async (file: File) => {
+          try {
+            const api = UseFetch.getInstance(
+              "https://ya-praktikum.tech/api/v2"
+            );
+            const formData = new FormData();
+            formData.append("avatar", file);
+
+            const updatedUser = await api.put<UserProfile>(
+              "/user/profile/avatar",
+              {
+                data: formData,
+              }
+            );
+
+            ToastService.getInstance().show(
+              "Аватар успешно обновлён",
+              "success"
+            );
+            this.props.children.changeAvatar.setProps({
+              src: `https://ya-praktikum.tech/api/v2/resources${updatedUser.avatar}`,
+            });
+
+            (this.props.children.changeAvatarModal as ChangeAvatarModal).hide();
+          } catch (err: any) {
+            console.error("Avatar update error:", err);
+            ToastService.getInstance().show(
+              err.response?.reason || "Ошибка при обновлении аватара",
+              "error"
+            );
+          }
         },
         onClose: () => {
           console.log("Modal yopildi");
         },
       }),
       changeAvatar: new Avatar({
-        src: "/no-photo.png",
+        src: AuthStore.getInstance().getUser()?.avatar
+          ? `https://ya-praktikum.tech/api/v2/resources${
+              AuthStore.getInstance().getUser()!.avatar
+            }`
+          : "/no-photo.png",
         onClick: () => {
           (children.changeAvatarModal as ChangeAvatarModal).show();
         },
@@ -55,6 +92,9 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
             profileSidebar.classList.add("remove-profile-sidebar");
             setTimeout(() => {
               document.querySelector(".profileSidebarContainer")?.remove();
+              setTimeout(() => {
+                Router.getInstance().go("/messenger");
+              }, 100);
             }, 300);
           }
         },
@@ -287,6 +327,20 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
         label: "Выйти",
         className: "profile__action profile__action--red",
         id: "logOut",
+        onClick: async () => {
+          try {
+            const api = UseFetch.getInstance(
+              "https://ya-praktikum.tech/api/v2"
+            );
+            await api.post("/auth/logout");
+            AuthStore.getInstance().clear();
+            ToastService.getInstance().show("Вы вышли из системы", "success");
+            Router.getInstance().go("/sign-in");
+          } catch (err) {
+            console.error("Logout error:", err);
+            ToastService.getInstance().show("Ошибка при выходе", "error");
+          }
+        },
       }),
       saveProfile: new Button({
         label: "Сохранить",
@@ -310,24 +364,39 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
       children,
     });
   }
-  protected checkFormValues(formId: string) {
+  protected async checkFormValues(formId: string) {
     const box = document.getElementById(formId) as HTMLFormElement;
-    if (box) {
-      const boxData = new FormData(box);
-      const inputs: Record<string, string> = {};
+    if (!box) return;
 
-      boxData.forEach((value, key) => {
-        inputs[key] = value.toString();
-        const validation = inputValidator(key, value.toString());
-        if (!validation.isValid) {
-          ToastService.getInstance().show(validation.message, "error");
-        } else {
-          console.log(inputs);
-        }
+    const boxData = new FormData(box);
+    const inputs: Record<string, string> = {};
+
+    let isFormValid = true;
+
+    boxData.forEach((value, key) => {
+      inputs[key] = value.toString().trim();
+      const validation = inputValidator(key, value.toString());
+      if (!validation.isValid) {
+        isFormValid = false;
+        ToastService.getInstance().show(validation.message, "error");
+      }
+    });
+
+    if (!isFormValid) return;
+
+    try {
+      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const updatedUser = await api.put("/user/profile", {
+        data: { ...inputs },
       });
+      console.log("updatedUser", updatedUser);
+      ToastService.getInstance().show("Данные успешно обновлены", "success");
+    } catch (err) {
+      console.error("Update profile error:", err);
+      ToastService.getInstance().show("Ошибка при обновлении профиля", "error");
     }
   }
-  protected checkPasswordFormValues(formId: string) {
+  protected async checkPasswordFormValues(formId: string) {
     const form = document.getElementById(formId) as HTMLFormElement;
     if (!form) return;
 
@@ -345,6 +414,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
       }
     });
 
+    // qo‘shimcha validatsiya
     if (!inputs.oldPassword) {
       isFormValid = false;
       ToastService.getInstance().show("Введите старый пароль", "error");
@@ -365,8 +435,39 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
       isFormValid = false;
       ToastService.getInstance().show("Пароли не совпадают", "error");
     }
-    if (isFormValid) {
-      ToastService.getInstance().show("Форма успешно отправлена", "success");
+
+    if (!isFormValid) return;
+
+    try {
+      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+
+      await api.put("/user/password", {
+        data: {
+          oldPassword: inputs.oldPassword,
+          newPassword: inputs.newPassword,
+        },
+      });
+
+      ToastService.getInstance().show("Пароль успешно изменён", "success");
+      this.props.children.saveProfilePassword.setProps({
+        className: "profile__save-btn hidden",
+      });
+
+      this.props.children.changeProfileData.setProps({
+        className: "profile__action profile__action--blue",
+      });
+      this.props.children.changeProfilePassword.setProps({
+        className: "profile__action profile__action--blue",
+      });
+      this.props.children.logOut.setProps({
+        className: "profile__action profile__action--red",
+      });
+    } catch (err: any) {
+      console.error("Password update error:", err);
+      ToastService.getInstance().show(
+        err.response?.reason || "Ошибка при изменении пароля",
+        "error"
+      );
     }
   }
 

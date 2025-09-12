@@ -35,11 +35,17 @@ function queryStringify(data: Record<string, any>): string {
 
 export class UseFetch {
   private baseURL: string;
+  private static instance: UseFetch;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
   }
-
+  static getInstance(baseURL: string = "https://jsonplaceholder.typicode.com") {
+    if (!UseFetch.instance) {
+      UseFetch.instance = new UseFetch(baseURL);
+    }
+    return UseFetch.instance;
+  }
   private buildURL(endpoint: string): string {
     if (endpoint.startsWith("http")) {
       return endpoint;
@@ -74,6 +80,7 @@ export class UseFetch {
 
       xhr.open(method, finalURL);
       xhr.timeout = timeout;
+      xhr.withCredentials = true;
 
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
@@ -81,12 +88,21 @@ export class UseFetch {
 
       xhr.onload = () => {
         try {
-          const response = xhr
-            .getResponseHeader("Content-Type")
-            ?.includes("application/json")
+          const contentType = xhr.getResponseHeader("Content-Type") || "";
+          const isJson = contentType.includes("application/json");
+          const response = isJson
             ? JSON.parse(xhr.responseText)
             : xhr.responseText;
-          resolve(response as R);
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(response as R);
+          } else {
+            reject({
+              status: xhr.status,
+              statusText: xhr.statusText,
+              response,
+            });
+          }
         } catch (e) {
           reject(e);
         }
