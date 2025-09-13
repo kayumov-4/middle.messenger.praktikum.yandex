@@ -15,6 +15,11 @@ type Options = {
 
 type OptionsWithoutMethod = Omit<Options, "method">;
 
+type HTTPMethod = <R = unknown>(
+  endpoint: string,
+  options?: OptionsWithoutMethod
+) => Promise<R>;
+
 function queryStringify(data: Record<string, any>): string {
   const keys = Object.keys(data);
   return keys.length
@@ -30,11 +35,17 @@ function queryStringify(data: Record<string, any>): string {
 
 export class UseFetch {
   private baseURL: string;
+  private static instance: UseFetch;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
   }
-
+  static getInstance(baseURL: string = "https://jsonplaceholder.typicode.com") {
+    if (!UseFetch.instance) {
+      UseFetch.instance = new UseFetch(baseURL);
+    }
+    return UseFetch.instance;
+  }
   private buildURL(endpoint: string): string {
     if (endpoint.startsWith("http")) {
       return endpoint;
@@ -44,38 +55,19 @@ export class UseFetch {
     );
   }
 
-  get(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.GET });
-  }
+  get: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.GET });
 
-  post(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.POST });
-  }
+  post: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.POST });
 
-  put(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.PUT });
-  }
+  put: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.PUT });
 
-  delete(
-    endpoint: string,
-    options: OptionsWithoutMethod = {}
-  ): Promise<XMLHttpRequest> {
-    return this.request(endpoint, { ...options, method: METHOD.DELETE });
-  }
+  delete: HTTPMethod = (endpoint, options = {}) =>
+    this.request(endpoint, { ...options, method: METHOD.DELETE });
 
-  request(
-    endpoint: string,
-    options: Options = { method: METHOD.GET }
-  ): Promise<XMLHttpRequest> {
+  private request<R = unknown>(endpoint: string, options: Options): Promise<R> {
     const { method, data, headers = {}, timeout = 5000 } = options;
 
     return new Promise((resolve, reject) => {
@@ -88,12 +80,33 @@ export class UseFetch {
 
       xhr.open(method, finalURL);
       xhr.timeout = timeout;
+      xhr.withCredentials = true;
 
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
       });
 
-      xhr.onload = () => resolve(xhr);
+      xhr.onload = () => {
+        try {
+          const contentType = xhr.getResponseHeader("Content-Type") || "";
+          const isJson = contentType.includes("application/json");
+          const response = isJson
+            ? JSON.parse(xhr.responseText)
+            : xhr.responseText;
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(response as R);
+          } else {
+            reject({
+              status: xhr.status,
+              statusText: xhr.statusText,
+              response,
+            });
+          }
+        } catch (e) {
+          reject(e);
+        }
+      };
       xhr.onabort = reject;
       xhr.onerror = reject;
       xhr.ontimeout = reject;

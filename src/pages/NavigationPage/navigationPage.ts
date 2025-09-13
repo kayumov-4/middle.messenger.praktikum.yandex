@@ -7,13 +7,13 @@ export default class NavigationPage extends Page {
   private pageComponents: Record<string, Block> = {
     loginLink: new Link({
       label: "Вернуться к входу в систему",
-      href: "/login",
+      href: "/sign-in",
       className: "navigation-link",
       onNavigate: () => {},
     }),
     registerLink: new Link({
       label: "Вернуться к регистрации",
-      href: "/register",
+      href: "/sign-up",
       className: "navigation-link",
       onNavigate: () => {},
     }),
@@ -38,7 +38,7 @@ export default class NavigationPage extends Page {
   };
 
   constructor() {
-    super(template.toString(), { title: "" });
+    super(template.toString(), { title: "", template: template.toString() });
     super.initComponents(this.pageComponents);
   }
 }

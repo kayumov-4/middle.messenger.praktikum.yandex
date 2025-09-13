@@ -95,10 +95,13 @@ export default class Block<P extends Props = {}> {
   }
 
   public setProps = (nextProps: Partial<P>) => {
-    if (!nextProps) {
-      return;
-    }
+    // console.log("setProps", nextProps);
+    if (!nextProps) return;
+
+    const oldProps = { ...this.props };
     Object.assign(this.props, nextProps);
+
+    this._eventBus.emit(Block.EVENTS.FLOW_CDU, oldProps, this.props);
   };
 
   get element() {
@@ -108,31 +111,33 @@ export default class Block<P extends Props = {}> {
   _render() {
     this.removeEvents();
 
-    const element = this.render();
+    const newElement = this.render();
 
-    if (this._element && element) {
-      this._element.replaceWith(element);
-      this._element = element;
+    if (this._element && this._element.parentNode) {
+      this._element.parentNode.replaceChild(newElement, this._element);
     }
 
+    this._element = newElement;
     this.addEvents();
   }
 
   render(): HTMLElement {
-    const temp = document.createElement("template");
-    temp.innerHTML = "";
-    return temp.content.firstElementChild as HTMLElement;
+    return this.compile(this.props.template, this.props);
   }
 
-  protected compile(template: string, context: P) {
+  protected compile(template: string, context: P): HTMLElement {
     const html = Handlebars.compile(template)(context);
-
     const temp = document.createElement("template");
     temp.innerHTML = html.trim();
 
+    if (temp.content.childElementCount > 1) {
+      const wrapper = document.createElement("div");
+      wrapper.append(...Array.from(temp.content.childNodes));
+      return wrapper;
+    }
+
     return temp.content.firstElementChild as HTMLElement;
   }
-
   getContent() {
     return this.element;
   }

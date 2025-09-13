@@ -7,6 +7,9 @@ import Link from "../../components/ui/Link/Link";
 import ToastService from "../../../utils/toastService";
 import { inputValidator } from "../../../utils/validator";
 import "./registerPage.scss";
+import { UseFetch } from "../../../utils/useFetch";
+import Router from "../../../core/Router";
+import AuthStore from "../../stores/AuthStore";
 
 export default class RegisterPage extends Page {
   private pageComponents: Record<string, Block> = {
@@ -66,7 +69,6 @@ export default class RegisterPage extends Page {
         },
       },
     }),
-
     registerPassword: new Input({
       id: "registerPassword",
       label: "Пароль",
@@ -105,34 +107,62 @@ export default class RegisterPage extends Page {
       },
     }),
     registerLink: new Link({
-      href: "/login",
+      href: "/sign-in",
       label: "Уже есть аккаунт?",
       className: "register-card__login-link",
       onNavigate: () => {},
     }),
   };
+
   constructor() {
-    super(template.toString(), { title: "Редактировать профиль" });
+    super(template.toString(), { title: "", template: template.toString() });
     super.initComponents(this.pageComponents);
   }
 
-  protected checkFormValues(formId: string) {
+  protected async checkFormValues(formId: string) {
     const box = document.getElementById(formId) as HTMLFormElement;
-    if (box) {
-      const boxData = new FormData(box);
-      const inputs: Record<string, string> = {};
+    if (!box) return;
 
-      boxData.forEach((value, key) => {
-        inputs[key] = value.toString();
-        const validation = inputValidator(key, value.toString());
-        if (!validation.isValid) {
-          ToastService.getInstance().show(validation.message, "error");
-        } else {
-          console.log(inputs);
-        }
+    const boxData = new FormData(box);
+    const inputs: Record<string, string> = {};
+    let hasError = false;
+
+    boxData.forEach((value, key) => {
+      inputs[key] = value.toString();
+      const validation = inputValidator(key, value.toString());
+      if (!validation.isValid) {
+        ToastService.getInstance().show(validation.message, "error");
+        hasError = true;
+      }
+    });
+
+    if (hasError) return;
+
+    try {
+      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      await api.post("/auth/signup", {
+        data: {
+          first_name: inputs.first_name,
+          second_name: inputs.second_name,
+          login: inputs.login,
+          email: inputs.email,
+          password: inputs.password,
+          phone: inputs.phone,
+        },
       });
+
+      const user = await api.get("/auth/user");
+      AuthStore.getInstance().setUser(user);
+
+      ToastService.getInstance().show("Регистрация успешна!", "success");
+
+      Router.getInstance().go("/messenger");
+    } catch (err: any) {
+      console.error("Register error:", err);
+      ToastService.getInstance().show("Ошибка при регистрации", "error");
     }
   }
+
   protected checkInputValue(inputName: string, InputEvent: Event) {
     const data = InputEvent.target as HTMLInputElement;
     const errorData = inputValidator(inputName, data.value);
