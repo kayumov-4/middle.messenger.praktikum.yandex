@@ -33,8 +33,18 @@ export default class App {
       .use("/", NavigationPage)
       .use("/404", NotFoundPage)
       .use("/500", ErrorPage)
-      .use("/sign-in", LoginPage)
-      .use("/sign-up", RegisterPage)
+      .use("/sign-in", LoginPage, () => {
+        if (AuthStore.getInstance().getUser()) {
+          return "/messenger";
+        }
+        return true;
+      })
+      .use("/sign-up", RegisterPage, () => {
+        if (AuthStore.getInstance().getUser()) {
+          return "/messenger";
+        }
+        return true;
+      })
       .use("/messenger", ChatPage, () => {
         if (!AuthStore.getInstance().getUser()) {
           return "/sign-in";

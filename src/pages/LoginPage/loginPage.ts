@@ -99,6 +99,9 @@ export default class LoginPage extends Page {
 
       Router.getInstance().go("/messenger");
     } catch (err: any) {
+      if (err?.response?.reason === "User already in system") {
+        Router.getInstance().go("/messenger");
+      }
       console.error("Login error:", err);
       ToastService.getInstance().show("Неверный логин или пароль", "error");
     }
