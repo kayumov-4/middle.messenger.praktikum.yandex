@@ -6,6 +6,7 @@ import "./ChatAddUserModal.scss";
 import Input from "../../ui/Input/Input";
 import Button from "../../ui/Button/Button";
 import { UserProfile } from "../../../entities/interfaces/UserProfile";
+import { BASE_URL } from "../../../../core/constants";
 
 interface ChatAddUserModalProps {
   chatId?: number | null;
@@ -78,7 +79,7 @@ export class ChatAddUserModal extends Block<ChatAddUserModalProps> {
     }
 
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
 
       const users = (await api.post("/user/search", {
         data: { login: inputEl.value.trim() },

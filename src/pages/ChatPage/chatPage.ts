@@ -17,6 +17,7 @@ import "./chatPage.scss";
 import { ConfirmDeleteModal } from "../../components/partials/ConfirmDeleteModal/ConfirmDeleteModal";
 import { ChatUsersModal } from "../../components/partials/ChatUsersModal/ChatUsersModal";
 import { ChatAddUserModal } from "../../components/partials/ChatAddUserModal/ChatAddUserModal";
+import { BASE_URL } from "../../../core/constants";
 
 interface ChatPageProps {
   conversations: any[];
@@ -25,6 +26,7 @@ interface ChatPageProps {
   activeChatTitle: string | null;
   currentUser: string;
   profileData: ProfileData;
+  events?: Record<string, (e: Event) => void>;
 }
 
 export default class ChatPage extends Page<ChatPageProps> {
@@ -59,6 +61,41 @@ export default class ChatPage extends Page<ChatPageProps> {
       currentUser: user?.first_name || "Me",
       profileData,
       ...props,
+      events: {
+        submit: (e: Event) => {
+          e.preventDefault();
+          const target = e.target as HTMLFormElement;
+          if (target && target.id === "sendMessageForm") {
+            const input = document.getElementById(
+              "messageInput"
+            ) as HTMLInputElement;
+            const text = input?.value.trim();
+
+            if (!text) {
+              ToastService.getInstance().show(
+                "Сообщение не может быть пустым",
+                "error"
+              );
+              return;
+            }
+
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+              this.socket.send(
+                JSON.stringify({
+                  content: text,
+                  type: "message",
+                })
+              );
+              input.value = "";
+            } else {
+              ToastService.getInstance().show(
+                "Соединение с чатом не установлено",
+                "error"
+              );
+            }
+          }
+        },
+      },
     });
     this.pageComponents = {
       chatsList: new ChatsList({
@@ -117,9 +154,7 @@ export default class ChatPage extends Page<ChatPageProps> {
       createChatModal: new CreateChatModal({
         onSave: async (title) => {
           try {
-            const api = UseFetch.getInstance(
-              "https://ya-praktikum.tech/api/v2"
-            );
+            const api = UseFetch.getInstance(BASE_URL);
             await api.post("/chats", { data: { title } });
             const chats = (await api.get<any[]>("/chats")) || [];
 
@@ -161,41 +196,41 @@ export default class ChatPage extends Page<ChatPageProps> {
       }),
       sendMessageButton: new Button({
         label: "",
-        type: "button",
+        type: "submit",
         className: "chat__send-button",
         id: "sendButton",
         image: "/arrow-right.svg",
-        onClick: (e) => {
-          e.preventDefault();
+        // onClick: (e) => {
+        //   e.preventDefault();
 
-          const input = document.getElementById(
-            "messageInput"
-          ) as HTMLInputElement;
-          const text = input?.value.trim();
+        //   const input = document.getElementById(
+        //     "messageInput"
+        //   ) as HTMLInputElement;
+        //   const text = input?.value.trim();
 
-          if (!text) {
-            ToastService.getInstance().show(
-              "Сообщение не может быть пустым",
-              "error"
-            );
-            return;
-          }
+        //   if (!text) {
+        //     ToastService.getInstance().show(
+        //       "Сообщение не может быть пустым",
+        //       "error"
+        //     );
+        //     return;
+        //   }
 
-          if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(
-              JSON.stringify({
-                content: text,
-                type: "message",
-              })
-            );
-            input.value = "";
-          } else {
-            ToastService.getInstance().show(
-              "Соединение с чатом не установлено",
-              "error"
-            );
-          }
-        },
+        //   if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        //     this.socket.send(
+        //       JSON.stringify({
+        //         content: text,
+        //         type: "message",
+        //       })
+        //     );
+        //     input.value = "";
+        //   } else {
+        //     ToastService.getInstance().show(
+        //       "Соединение с чатом не установлено",
+        //       "error"
+        //     );
+        //   }
+        // },
       }),
 
       chatProfileBtn: new Button({
@@ -222,9 +257,7 @@ export default class ChatPage extends Page<ChatPageProps> {
         image: "/logout.svg",
         onClick: async () => {
           try {
-            const api = UseFetch.getInstance(
-              "https://ya-praktikum.tech/api/v2"
-            );
+            const api = UseFetch.getInstance(BASE_URL);
             await api.post("/auth/logout");
             AuthStore.getInstance().clear();
             ToastService.getInstance().show("Вы вышли из системы", "success");
@@ -240,7 +273,7 @@ export default class ChatPage extends Page<ChatPageProps> {
   }
   protected async onMount() {
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       const chats = await api.get<any[]>("/chats");
 
       this.setProps({ conversations: chats });
@@ -272,10 +305,48 @@ export default class ChatPage extends Page<ChatPageProps> {
         }
       });
     }
+
+    //
+
+    const sendMessageForm = document.getElementById(
+      "sendMessageForm"
+    ) as HTMLFormElement;
+    if (sendMessageForm) {
+      sendMessageForm.addEventListener("submit", (e: Event) => {
+        e.preventDefault();
+        const input = document.getElementById(
+          "messageInput"
+        ) as HTMLInputElement;
+        const text = input?.value.trim();
+
+        if (!text) {
+          ToastService.getInstance().show(
+            "Сообщение не может быть пустым",
+            "error"
+          );
+          return;
+        }
+
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+          this.socket.send(
+            JSON.stringify({
+              content: text,
+              type: "message",
+            })
+          );
+          input.value = ""; // inputni tozalash
+        } else {
+          ToastService.getInstance().show(
+            "Соединение с чатом не установлено",
+            "error"
+          );
+        }
+      });
+    }
   }
   private async openChat(chatId: number) {
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       const user = AuthStore.getInstance().getUser();
       console.log("user:", user);
 

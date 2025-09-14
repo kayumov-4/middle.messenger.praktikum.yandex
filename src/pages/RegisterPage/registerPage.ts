@@ -10,6 +10,7 @@ import "./registerPage.scss";
 import { UseFetch } from "../../../utils/useFetch";
 import Router from "../../../core/Router";
 import AuthStore from "../../stores/AuthStore";
+import { BASE_URL } from "../../../core/constants";
 
 export default class RegisterPage extends Page {
   private pageComponents: Record<string, Block> = {
@@ -139,7 +140,7 @@ export default class RegisterPage extends Page {
     if (hasError) return;
 
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       await api.post("/auth/signup", {
         data: {
           first_name: inputs.first_name,

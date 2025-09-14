@@ -3,6 +3,7 @@ import { UseFetch } from "../../../../utils/useFetch";
 import ToastService from "../../../../utils/toastService";
 import template from "./ChatUsersModal.hbs";
 import "./ChatUsersModal.scss";
+import { BASE_URL } from "../../../../core/constants";
 
 interface ChatUsersModalProps {
   chatId?: number | null;
@@ -47,7 +48,7 @@ export class ChatUsersModal extends Block<ChatUsersModalProps> {
 
   private async loadUsers(chatId: number) {
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       const users = await api.get<any[]>(`/chats/${chatId}/users`);
       const listEl = this.getContent()?.querySelector("#chatUsersList");
       if (listEl) {
@@ -76,7 +77,7 @@ export class ChatUsersModal extends Block<ChatUsersModalProps> {
 
   private async removeUser(chatId: number, userId: number) {
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       await api.delete("/chats/users", {
         data: { users: [userId], chatId },
       });

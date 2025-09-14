@@ -1,4 +1,5 @@
 import Block from "../../../../core/Block";
+import { BASE_URL } from "../../../../core/constants";
 import ToastService from "../../../../utils/toastService";
 import { UseFetch } from "../../../../utils/useFetch";
 import Button from "../../ui/Button/Button";
@@ -52,7 +53,7 @@ export class ConfirmDeleteModal extends Block<ConfirmDeleteModalProps> {
 
   private async deleteChat(chatId: number) {
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       await api.delete("/chats", { data: { chatId } });
       ToastService.getInstance().show("Чат удален", "success");
       this.hide();

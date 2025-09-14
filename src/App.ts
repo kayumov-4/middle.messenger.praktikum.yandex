@@ -9,10 +9,11 @@ import AuthStore from "./stores/AuthStore";
 import { UseFetch } from "../utils/useFetch";
 import ToastService from "../utils/toastService";
 import SettingsPage from "./pages/SettingsPage/settingsPage";
+import { BASE_URL } from "../core/constants";
 
 async function initAuth() {
   try {
-    const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+    const api = UseFetch.getInstance(BASE_URL);
     const user = await api.get("/auth/user");
     AuthStore.getInstance().setUser(user);
   } catch (e: any) {

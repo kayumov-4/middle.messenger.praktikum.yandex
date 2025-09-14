@@ -11,6 +11,7 @@ import { UseFetch } from "../../../../utils/useFetch";
 import AuthStore from "../../../stores/AuthStore";
 import Router from "../../../../core/Router";
 import { UserProfile } from "../../../entities/interfaces/UserProfile";
+import { BASE_URL } from "../../../../core/constants";
 
 export interface ProfileSidebarProps {
   children: any;
@@ -36,9 +37,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
       changeAvatarModal: new ChangeAvatarModal({
         onSave: async (file: File) => {
           try {
-            const api = UseFetch.getInstance(
-              "https://ya-praktikum.tech/api/v2"
-            );
+            const api = UseFetch.getInstance(BASE_URL);
             const formData = new FormData();
             formData.append("avatar", file);
 
@@ -54,7 +53,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
               "success"
             );
             this.props.children.changeAvatar.setProps({
-              src: `https://ya-praktikum.tech/api/v2/resources${updatedUser.avatar}`,
+              src: `${BASE_URL}/resources${updatedUser.avatar}`,
             });
 
             (this.props.children.changeAvatarModal as ChangeAvatarModal).hide();
@@ -72,9 +71,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
       }),
       changeAvatar: new Avatar({
         src: AuthStore.getInstance().getUser()?.avatar
-          ? `https://ya-praktikum.tech/api/v2/resources${
-              AuthStore.getInstance().getUser()!.avatar
-            }`
+          ? `${BASE_URL}/resources${AuthStore.getInstance().getUser()!.avatar}`
           : "/no-photo.png",
         onClick: () => {
           (children.changeAvatarModal as ChangeAvatarModal).show();
@@ -329,9 +326,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
         id: "logOut",
         onClick: async () => {
           try {
-            const api = UseFetch.getInstance(
-              "https://ya-praktikum.tech/api/v2"
-            );
+            const api = UseFetch.getInstance(BASE_URL);
             await api.post("/auth/logout");
             AuthStore.getInstance().clear();
             ToastService.getInstance().show("Вы вышли из системы", "success");
@@ -385,7 +380,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
     if (!isFormValid) return;
 
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
       const updatedUser = await api.put("/user/profile", {
         data: { ...inputs },
       });
@@ -439,7 +434,7 @@ export default class ProfileSidebar extends Block<ProfileSidebarProps> {
     if (!isFormValid) return;
 
     try {
-      const api = UseFetch.getInstance("https://ya-praktikum.tech/api/v2");
+      const api = UseFetch.getInstance(BASE_URL);
 
       await api.put("/user/password", {
         data: {

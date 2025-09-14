@@ -26,18 +26,9 @@ export class CreateChatModal extends Block<CreateChatModalProps> {
       }),
       createChatModalSubmit: new Button({
         label: "Создать",
-        type: "button",
+        type: "submit",
         className: "create-chat-modal__body-submit",
         id: "saveCreateChatModal",
-        onClick: () => {
-          const input =
-            this.element?.querySelector<HTMLInputElement>("#chatTitle");
-          const title = input?.value.trim();
-          if (title) {
-            props.onSave?.(title);
-          }
-          this.hide();
-        },
       }),
     };
 
@@ -45,9 +36,19 @@ export class CreateChatModal extends Block<CreateChatModalProps> {
       ...props,
       children,
       events: {
+        submit: (e: Event) => {
+          e.preventDefault();
+          const input =
+            this.element?.querySelector<HTMLInputElement>("#chatTitle");
+          const title = input?.value.trim();
+          if (title) {
+            props.onSave?.(title);
+            input!.value = "";
+          }
+          this.hide();
+        },
         click: (e: Event) => {
           const target = e.target as HTMLElement;
-
           if (target.id === "closeCreateChatModal") {
             this.hide();
             props.onClose?.();
