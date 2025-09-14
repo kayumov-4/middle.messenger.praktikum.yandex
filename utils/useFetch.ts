@@ -87,29 +87,38 @@ export class UseFetch {
       });
 
       xhr.onload = () => {
-        try {
-          const contentType = xhr.getResponseHeader("Content-Type") || "";
-          const isJson = contentType.includes("application/json");
-          const response = isJson
-            ? JSON.parse(xhr.responseText)
-            : xhr.responseText;
+        const contentType = xhr.getResponseHeader("Content-Type") || "";
+        const isJson = contentType.includes("application/json");
 
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(response as R);
-          } else {
-            reject({
+        let response: any = xhr.responseText;
+
+        if (isJson) {
+          try {
+            response = JSON.parse(xhr.responseText);
+          } catch {
+            return reject({
               status: xhr.status,
               statusText: xhr.statusText,
-              response,
+              error: "Invalid JSON in response",
+              raw: xhr.responseText,
             });
           }
-        } catch (e) {
-          reject(e);
+        }
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(response as R);
+        } else {
+          reject({
+            status: xhr.status,
+            statusText: xhr.statusText,
+            response,
+          });
         }
       };
-      xhr.onabort = reject;
-      xhr.onerror = reject;
-      xhr.ontimeout = reject;
+
+      xhr.onabort = () => reject({ error: "Request aborted" });
+      xhr.onerror = () => reject({ error: "Network error" });
+      xhr.ontimeout = () => reject({ error: "Request timed out" });
 
       if (method === METHOD.GET || !data) {
         xhr.send();
