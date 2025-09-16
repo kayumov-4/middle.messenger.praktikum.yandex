@@ -1,44 +1,55 @@
 import Handlebars from "handlebars";
 import Block from "./Block";
 
-export default class Page extends Block {
-  private template: string;
-  private context: Record<string, unknown>;
-  private components: Record<string, Block> = {};
+export default class Page<
+  P extends Record<string, any> = Record<string, any>
+> extends Block<P> {
+  protected template: string;
+  public props: P;
+  private components: Record<string, Block<any>> = {};
+  protected root: HTMLElement | null = null;
 
-  constructor(template: string, context: Record<string, unknown> = {}) {
-    super("main");
-    this.template = template;
-    this.context = context;
-  }
-
-  protected initComponents(components: Record<string, Block> = {}) {
-    this.components = components;
-    if (components) {
-      Object.entries(components).forEach(([key, value]) => {
-        this.register(key, value);
-      });
+  // 🔹 Dual constructor pattern
+  constructor(arg1?: string | P, arg2?: P) {
+    if (typeof arg1 === "string") {
+      // arg1 = template, arg2 = props
+      super("main", arg2 || ({} as P));
+      this.template = arg1;
+      this.props = arg2 || ({} as P);
+    } else {
+      // arg1 = props, arg2 = undefined
+      super("main", arg1 || ({} as P));
+      this.template = "";
+      this.props = arg1 || ({} as P);
     }
   }
 
-  register(slotName: string, component: Block) {
+  protected initComponents(components: Record<string, Block<any>> = {}) {
+    this.components = components;
+    Object.entries(components).forEach(([key, value]) => {
+      this.register(key, value);
+    });
+  }
+
+  public register(slotName: string, component: Block<any>) {
     if (slotName) {
       this.components[slotName] = component;
     }
   }
 
-  mount(rootSelector: string) {
-    const root = document.querySelector(rootSelector);
+  public mount(rootSelector: string) {
+    const root = document.querySelector<HTMLElement>(rootSelector);
     if (!root) throw new Error(`Root "${rootSelector}" not found`);
 
-    const html = Handlebars.compile(this.template)(this.context);
+    const html = Handlebars.compile(this.template)(this.props);
     root.innerHTML = html;
 
-    Object.entries(this.components).forEach(([slot, comp]) => {
-      const target =
-        root.querySelector<HTMLElement>(`[data-slot="${slot}"]`) ||
-        root.querySelector<HTMLElement>(`#${slot}`);
+    this.root = root;
 
+    Object.entries(this.components).forEach(([slot, comp]) => {
+      const target = root.querySelector<HTMLElement>(
+        `[data-slot="${slot}"], #${slot}`
+      );
       if (!target) {
         console.warn(`Slot "${slot}" not found on page`);
         return;
@@ -48,7 +59,32 @@ export default class Page extends Block {
       if (content) {
         target.replaceWith(content);
       }
-      comp.dispatchComponentDidMount?.();
+
+      (comp as any).dispatchComponentDidMount?.();
     });
+
+    this.onMount();
   }
+
+  public unmount() {
+    if (this.root) {
+      this.onUnmount();
+
+      Object.values(this.components).forEach((comp) => {
+        (comp as any).unmount?.();
+      });
+
+      this.root.innerHTML = "";
+      this.root = null;
+    }
+  }
+
+  public destroy() {
+    this.unmount();
+    this.onDestroy();
+  }
+
+  protected onMount() {}
+  protected onUnmount() {}
+  protected onDestroy() {}
 }

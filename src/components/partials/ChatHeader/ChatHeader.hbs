@@ -1,0 +1,21 @@
+<div class="chat__main-header" id="chatHeader">
+  <div class="chat__breadcrumb">
+    <span class="chat__current">
+      {{#if activeChatTitle}}
+        {{activeChatTitle}}
+      {{/if}}
+    </span>
+  </div>
+  {{#if activeChatTitle}}
+    <div class="chat__menu">
+      <button class="chat__menu-button" id="chatMenuBtn" type="button">
+        <img src="/chat-menu.svg" alt="Menu" />
+      </button>
+      <ul class="chat__menu-dropdown hidden" id="chatMenuDropdown">
+        <li data-action="users">👥 Участники</li>
+        <li data-action="add">➕ Добавить пользователя</li>
+        <li data-action="remove">🗑 Удалить чат</li>
+      </ul>
+    </div>
+  {{/if}}
+</div>

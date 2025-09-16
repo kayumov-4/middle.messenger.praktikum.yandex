@@ -1,0 +1,14 @@
+<div class="chat__messages" id="activeChat">
+  {{#each messages}}
+    <div class="chat__message {{#if isMine}}chat__message--outgoing{{else}}chat__message--incoming{{/if}}">
+      <div class="chat__message-content">
+        <div class="chat__message-text">
+          <p>{{content}}</p>
+        </div>
+        <span class="chat__message-time">
+          {{time}}
+        </span>
+      </div>
+    </div>
+  {{/each}}
+</div>
