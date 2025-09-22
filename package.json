@@ -11,7 +11,7 @@
     "build": "vite build",
     "start": "vite build && vite preview --port 3000 --strictPort",
     "lint": "eslint . --ext .ts,.js",
-    "prepare": "husky",
+    "prepare": "husky install",
     "test": "jest"
   },
   "devDependencies": {
