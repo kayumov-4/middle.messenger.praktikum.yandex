@@ -95,7 +95,6 @@ export default class Block<P extends Props = {}> {
   }
 
   public setProps = (nextProps: Partial<P>) => {
-    // console.log("setProps", nextProps);
     if (!nextProps) return;
 
     const oldProps = { ...this.props };

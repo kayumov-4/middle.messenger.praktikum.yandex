@@ -5,6 +5,7 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
+    "ignoreDeprecations": "5.0",
     "strict": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -18,5 +19,11 @@
     "sourceMap": true,
     "strictNullChecks": true
   },
-  "include": ["src", "vite-env.d.ts", "core/**/*.ts", "utils/**/*"]
+  "include": [
+    "src",
+    "vite-env.d.ts",
+    "stylelint.config.ts",
+    "core/**/*.ts",
+    "utils/**/*"
+  ]
 }
